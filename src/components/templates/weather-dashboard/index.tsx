@@ -54,6 +54,7 @@ export const WeatherDashboard = <City, Unit>(props: IDashboard<City, Unit>) => {
                         onChange={onCityChange}
                     />
                     <Switcher
+                        value={true}
                         labels={units.map(value => `°${value}`)}
                         onChange={value => onUnitChange(value ? 'C' : 'F')}
                     />

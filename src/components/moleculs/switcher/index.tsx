@@ -8,9 +8,9 @@ interface ISwitcher {
     onChange: (value: boolean) => void;
 }
 
-export const Switcher = (props) => {
+export const Switcher = (props: ISwitcher) => {
     const {value, labels, onChange} = props;
-    const [checked, setChecked] = useState(true);
+    const [checked, setChecked] = useState(value);
 
     useEffect(() => {
         onChange(checked);
