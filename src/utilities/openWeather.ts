@@ -1,0 +1,1 @@
+export const buildIconURL = (name: string) => `https://openweathermap.org/img/wn/${name}.png`

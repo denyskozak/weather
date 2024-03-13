@@ -19,7 +19,7 @@ export const Switcher = (props) => {
     return (
         <Container>
             <Typography>{labels[0]}</Typography>
-            <Label >
+            <Label>
                 <HiddenInput
                     checked={checked}
                     onChange={() => setChecked(!checked)}

@@ -1,25 +1,18 @@
 import {useMemo, useState} from 'react';
 import {useQuery} from '@tanstack/react-query'
 import {WeatherDashboard} from '../components';
-import {fetchWeatherByCity} from '../api';
-import {cities} from '../consts';
+import {fetchWeatherByCity, WeatherResponse} from '../api';
+import {cities, units} from '../consts';
 import {Unit} from '../types';
-import {capitalizeString} from '../utilities';
+import {buildIconURL, capitalizeString} from '../utilities';
 
 export const MainPage = () => {
     const [city, setCity] = useState<cities>(cities[0]);
     const [unit, setUnit] = useState<Unit>('C');
 
-    console.log('unit: ', unit);
-
-    const unitToChar: Unit = {
-        'F' : 'imperial',
-        'C' : 'metric',
-    };
-    const {data, isPending, error} = useQuery({
-        // For avoid memery lack when old params is not actual
+    const {data, isPending, error} = useQuery<WeatherResponse>({
         queryKey: ['weatherData', city, unit],
-        queryFn: () => fetchWeatherByCity(city, unitToChar[unit])
+        queryFn: () => fetchWeatherByCity(city, unit)
     });
 
     const cityOptions = useMemo(
@@ -27,21 +20,25 @@ export const MainPage = () => {
         [cities],
     );
 
-
-
     return (
         <WeatherDashboard<cities, Unit>
-            title="Weather App"
-
-            cities={cityOptions}
-            onCityChange={setCity}
-            unit={unit}
-            units={Object.keys(unitToChar)}
-            onUnitChange={setUnit}
+            title="Happy Weather App"
 
             temperature={data?.main?.temp}
+            sunrise={data?.sys?.sunrise}
+            sunset={data?.sys?.sunset}
+
+            weatherIconSource={buildIconURL(data?.weather[0]?.icon)}
+            weatherDescription={capitalizeString(data?.weather[0]?.description || '')}
+            cities={cityOptions}
+            onCityChange={setCity}
+
+            unit={unit}
+            units={Object.keys(units)}
+            onUnitChange={setUnit}
+
             isLoading={isPending}
-            error={error}
+            isError={Boolean(error)}
         />
     )
 }

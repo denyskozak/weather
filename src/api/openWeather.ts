@@ -1,8 +1,30 @@
 import {z} from 'zod';
 import {City, Unit} from '../types';
+import {units} from '../consts';
+import {promiseDelay} from '../utilities';
 
 const basicURL = 'https://api.openweathermap.org/data/2.5';
 const weatherEndpoint = `${basicURL}/weather`;
+
+// For avoid incorrect response data structure
+const weatherDataGuard =
+    z.object({
+        main: z.object({
+            temp: z.number(),
+        }),
+        sys: z.object({
+            sunrise: z.number(),
+            sunset: z.number(),
+        }),
+        weather: z.array(
+            z.object({
+                icon: z.string(),
+                description: z.string(),
+            })
+        ),
+    });
+
+export type WeatherResponse = z.infer<typeof weatherDataGuard>;
 
 const fetchWeather = <T>(params: Record<string, T>) => {
     const {VITE_OPEN_WEATHER_MAP_API_KEY} = import.meta.env;
@@ -18,17 +40,9 @@ const fetchWeather = <T>(params: Record<string, T>) => {
 
 export const fetchWeatherByCity = async (
     city: City,
-    units: Unit
-) => {
-    // For avoid wrong response data structure
-    const weatherDataGuard =
-        z.object({
-            main: z.object({
-                temp: z.number(),
-            }),
-        });
-
-    const response = await fetchWeather({q: city, units});
-
+    unit: Unit
+): Promise<WeatherResponse> => {
+    const response = await fetchWeather({q: city, units: units[unit]});
+    await promiseDelay(500);
     return weatherDataGuard.parse(response);
 }

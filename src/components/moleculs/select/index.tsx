@@ -18,7 +18,6 @@ export const Select = (props: ISelect) => {
 
     const [isOpen, setIsOpen] = useState(false);
     const [selectedOption, setSelectedOption] = useState(value || options[0].value);
-    const [activeIndex, setActiveIndex] = useState(0);
 
     const optionLabelByValue = useMemo(() =>
             options.reduce(
@@ -39,22 +38,9 @@ export const Select = (props: ISelect) => {
         onChange(optionValue);
     };
 
-    const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
-        if (event.key === 'ArrowDown' && activeIndex < options.length - 1) {
-            setActiveIndex(activeIndex + 1);
-        } else if (event.key === 'ArrowUp' && activeIndex > 0) {
-            setActiveIndex(activeIndex - 1);
-        } else if (event.key === 'Enter') {
-            isOpen ? handleSelect(options[activeIndex].value) : setIsOpen(true);
-        }
-    };
-
     return (
         <Container>
-            <Label
-                onClick={handleToggle}
-                onKeyDown={handleKeyDown}
-                tabIndex="0">
+            <Label onClick={handleToggle}>
                 {optionLabelByValue[selectedOption]}
                 <span>&#9660;</span>
             </Label>
@@ -62,15 +48,9 @@ export const Select = (props: ISelect) => {
                 <Dropdown>
                     {options.map((option, index) => (
                         <Option
-                            key={index}
-                            tabIndex={isOpen ? '0' : '-1'}
+                            key={`${option.label}-${option.value}`}
                             onClick={() => handleSelect(option.value)}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter') {
-                                    handleSelect(option.value);
-                                }
-                            }}
-                            aria-selected={index === activeIndex}
+                            aria-selected={option.value === selectedOption}
                         >
                             {option.label}
                         </Option>

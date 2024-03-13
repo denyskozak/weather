@@ -3,6 +3,7 @@ import styled, {css} from 'styled-components';
 const Container = styled.div`
   display: flex;
   gap: 4px;
+  vertical-align: center;
 `;
 
 const Label = styled.label`
@@ -19,7 +20,7 @@ const Slider = styled.span<{ checked: boolean }>`
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #ccc;
+  background-color: ${props => props.theme.blue};
   -webkit-transition: .4s;
   transition: .4s;
   border-radius: 34px;
