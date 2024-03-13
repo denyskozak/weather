@@ -1,5 +1,7 @@
 # Glad to get your feedback
 
+Required: add your OpenWeather key to .env.local
+
 - react-query - requests
 - styled-components - styling
 - zod - response data guardds

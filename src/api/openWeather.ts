@@ -28,6 +28,12 @@ export type WeatherResponse = z.infer<typeof weatherDataGuard>;
 
 const fetchWeather = <T>(params: Record<string, T>) => {
     const {VITE_OPEN_WEATHER_MAP_API_KEY} = import.meta.env;
+
+    if (!VITE_OPEN_WEATHER_MAP_API_KEY) {
+        const error = 'Need provide VITE_OPEN_WEATHER_MAP_API_KEY in .env.local';
+        console.error(error);
+        return Promise.reject(error)
+    }
     const urlSearchParams = new URL(weatherEndpoint);
     const paramsWithApiKey = {...params, appid: VITE_OPEN_WEATHER_MAP_API_KEY};
 
